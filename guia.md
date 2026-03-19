@@ -1,11 +1,11 @@
 # Manual y metodología completa de uso de sqlmap
 
 
-sqlmap es una herramienta open source de *pentesting* que automatiza la detección y explotación de vulnerabilidades de SQL injection y, cuando se dan las condiciones (DBMS, privilegios y técnica disponible), puede llegar a “tomar” el servidor de base de datos: enumerar esquema, extraer datos, acceder al sistema de ficheros y ejecutar comandos en el sistema operativo subyacente. citeturn4search36turn1view0
+sqlmap es una herramienta open source de *pentesting* que automatiza la detección y explotación de vulnerabilidades de SQL injection y, cuando se dan las condiciones (DBMS, privilegios y técnica disponible), puede llegar a “tomar” el servidor de base de datos: enumerar esquema, extraer datos, acceder al sistema de ficheros y ejecutar comandos en el sistema operativo subyacente.
 
-Una metodología operativa sólida con sqlmap no empieza con “tirar comandos”. Empieza con: captura y entendimiento del tráfico HTTP, identificación del punto de entrada, verificación manual (aunque sea mínima), y recién entonces automatización con `-r` (request cruda desde Burp) o con `--data/--cookie/--headers`. citeturn0search1turn0search2turn3view1
+Una metodología operativa sólida con sqlmap no empieza con “tirar comandos”. Empieza con: captura y entendimiento del tráfico HTTP, identificación del punto de entrada, verificación manual (aunque sea mínima), y recién entonces automatización con `-r` (request cruda desde Burp) o con `--data/--cookie/--headers`. 
 
-Este manual describe, en español (es-ES), un flujo realista “de laboratorio/pentesting”: técnicas de inyección (boolean/error/time/union/stacked), enumeración (`--dbs/--tables/--columns/--dump`), opciones avanzadas (`--level/--risk/--tamper/--threads/--batch/-p/--technique`), autenticación/sesiones (`--cookie/--data/--headers/--auth-type`), crawling (`--forms/--crawl`), post-explotación (`--os-shell/--os-cmd/--file-read/--file-write/--os-pwn`) y resolución de problemas (302, “no parameter found”, “broken pipe”, WAF). citeturn1view0turn3view2turn4search0
+Este manual describe, en español (es-ES), un flujo realista “de laboratorio/pentesting”: técnicas de inyección (boolean/error/time/union/stacked), enumeración (`--dbs/--tables/--columns/--dump`), opciones avanzadas (`--level/--risk/--tamper/--threads/--batch/-p/--technique`), autenticación/sesiones (`--cookie/--data/--headers/--auth-type`), crawling (`--forms/--crawl`), post-explotación (`--os-shell/--os-cmd/--file-read/--file-write/--os-pwn`) y resolución de problemas (302, “no parameter found”, “broken pipe”, WAF). 
 
 ## Fundamentos de SQL injection y técnicas de explotación
 
@@ -13,28 +13,28 @@ La SQL injection aparece cuando una aplicación incorpora entrada controlada por
 
 ### Tabla comparativa de técnicas y cuándo usarlas
 
-La nomenclatura práctica en sqlmap para seleccionar técnicas es `--technique=...`, con letras: `B` (boolean), `E` (error), `U` (union), `S` (stacked), `T` (time), `Q` (inline). La lista y significado están documentados en la guía oficial de uso. citeturn1view0turn2view0
+La nomenclatura práctica en sqlmap para seleccionar técnicas es `--technique=...`, con letras: `B` (boolean), `E` (error), `U` (union), `S` (stacked), `T` (time), `Q` (inline). La lista y significado están documentados en la guía oficial de uso. 
 
 | Técnica | Qué “mide”/cómo exfiltra | Señal típica | Ventajas | Coste / limitaciones | Cuándo priorizar |
 |---|---|---|---|---|---|
 | Boolean-based blind (`B`) | Diferencias entre respuestas “True/False” | Cambios sutiles en contenido/código/longitud | Robusta cuando no hay errores visibles | Lenta; requiere comparaciones fiables | Cuando no hay errores y el tiempo no varía; ideal con `--string/--not-string/--code` si la página es inestable citeturn1view0turn0search6 |
-| Error-based (`E`) | Exfiltración mediante mensajes de error DBMS | Errores SQL/reflejos en respuesta | Suele ser muy rápida (in-band) | Depende de verbosidad/errores visibles | Cuando la app muestra errores o es posible forzarlos (`--parse-errors` puede ayudar) citeturn1view0 |
+| Error-based (`E`) | Exfiltración mediante mensajes de error DBMS | Errores SQL/reflejos en respuesta | Suele ser muy rápida (in-band) | Depende de verbosidad/errores visibles | Cuando la app muestra errores o es posible forzarlos (`--parse-errors` puede ayudar)  |
 | Time-based blind (`T`) | Inferencia por retardos (p.ej. `SLEEP`) | Respuestas consistentemente más lentas | Funciona incluso sin diferencias de contenido | Muy lenta; sensible a latencia | Cuando la app es “ciega” pero el timing es estable; ajusta `--time-sec` citeturn1view0turn0search6 |
-| UNION query-based (`U`) | Exfiltra datos combinando resultados (`UNION SELECT`) | Datos aparecen en la página | Muy rápida si hay reflejo | Requiere encontrar nº de columnas/compatibilidad | Cuando el endpoint renderiza resultados en pantalla y permite `UNION` (puede requerir `--union-cols/--union-char`) citeturn1view0 |
-| Stacked queries (`S`) | Ejecuta múltiples sentencias separadas | Efectos “side-effect” (p.ej. `SLEEP`) | Habilita OS/file access con más facilidad | No siempre permitido; más riesgoso | Cuando necesitas *takeover* (OS/file/acciones) y el DBMS lo soporta; sqlmap indica que `S` es relevante para takeover/FS citeturn1view0turn2view4 |
-| Inline queries (`Q`) | Subconsultas insertadas en la query | Similar a otras, según vector | Complementa combinaciones | Depende del contexto SQL | Cuando el punto de inyección está en un contexto que favorece subqueries citeturn1view0 |
+| UNION query-based (`U`) | Exfiltra datos combinando resultados (`UNION SELECT`) | Datos aparecen en la página | Muy rápida si hay reflejo | Requiere encontrar nº de columnas/compatibilidad | Cuando el endpoint renderiza resultados en pantalla y permite `UNION` (puede requerir `--union-cols/--union-char`)  |
+| Stacked queries (`S`) | Ejecuta múltiples sentencias separadas | Efectos “side-effect” (p.ej. `SLEEP`) | Habilita OS/file access con más facilidad | No siempre permitido; más riesgoso | Cuando necesitas *takeover* (OS/file/acciones) y el DBMS lo soporta; sqlmap indica que `S` es relevante para takeover/ |
+| Inline queries (`Q`) | Subconsultas insertadas en la query | Similar a otras, según vector | Complementa combinaciones | Depende del contexto SQL | Cuando el punto de inyección está en un contexto que favorece subqueries  |
 
-Un punto clave de metodología: no “fuerces” técnicas por capricho. Si sqlmap detecta `E` o `U` disponibles, normalmente serán preferibles por velocidad, y caerá a *blind* cuando no existe opción in-band. citeturn1view0
+Un punto clave de metodología: no “fuerces” técnicas por capricho. Si sqlmap detecta `E` o `U` disponibles, normalmente serán preferibles por velocidad, y caerá a *blind* cuando no existe opción in-band. 
 
 ## Preparación operativa con Burp y request cruda
 
-Probar SQLi en serio exige ver y controlar la request real. La documentación de entity["company","PortSwigger","burp suite vendor"] insiste en un flujo de pruebas donde manipulas requests y entradas para detectar inyecciones. citeturn0search1
+Probar SQLi en serio exige ver y controlar la request real. La documentación de entity["company","PortSwigger","burp suite vendor"] insiste en un flujo de pruebas donde manipulas requests y entradas para detectar inyecciones.
 
-image_group{"aspect_ratio":"16:9","query":["Burp Suite Repeater raw HTTP request example","Burp Suite Proxy HTTP request intercepted example","Burp Suite Repeater request body application/x-www-form-urlencoded"],"num_per_query":1}
+image_group{"aspect_ratio":"16:9","query":["Burp Suite Repeater raw HTTP request example","Burp Suite Proxy HTTP request intercepted example","Burp Suite Repeater request body application/x-www-form-urlencoded"],"num_per_query":1}
 
 ### Por qué `-r` es el estándar de facto
 
-La guía oficial de uso de sqlmap documenta `-r` como “cargar una HTTP request cruda desde un fichero”, lo que permite prescindir de muchas opciones (cookies, POST data, etc.) y reproducir exactamente el tráfico observado. Incluso incluye un ejemplo de formato de archivo de request. citeturn3view1turn1view0
+La guía oficial de uso de sqlmap documenta `-r` como “cargar una HTTP request cruda desde un fichero”, lo que permite prescindir de muchas opciones (cookies, POST data, etc.) y reproducir exactamente el tráfico observado. Incluso incluye un ejemplo de formato de archivo de request. 
 
 **Plantilla mínima de `req.txt` (formato crudo)**  
 (Esto es reproducible; ajusta `Host`, ruta y parámetros a tu caso.)
@@ -51,15 +51,15 @@ name=asd&password=asd&submit=
 
 Puntos importantes:
 
-- La request cruda contiene *headers* y cuerpo. sqlmap parsea ambas partes. citeturn3view1turn1view0  
-- Si el target usa HTTPS y el `Host` no lo deja claro, la documentación recomienda `--force-ssl` (o `Host: ...:443`) para forzar conexión TLS. citeturn3view1turn3view1  
-- Si hay tokens anti-CSRF, sqlmap tiene opciones específicas (`--csrf-token`, `--csrf-url`, etc.). En tu request esto está **no especificado**. citeturn3view1turn3view1  
+- La request cruda contiene *headers* y cuerpo. sqlmap parsea ambas partes.   
+- Si el target usa HTTPS y el `Host` no lo deja claro, la documentación recomienda `--force-ssl` (o `Host: ...:443`) para forzar conexión TLS. 
+- Si hay tokens anti-CSRF, sqlmap tiene opciones específicas (`--csrf-token`, `--csrf-url`, etc.). En tu request esto está **no especificado**.  
 
 image_group{"aspect_ratio":"16:9","query":["sqlmap -r request file example","sqlmap request.txt raw http request format","sqlmap parse HTTP request from file screenshot"],"num_per_query":1}
 
 ### Alternativas a `-r` cuando no puedes capturar con Burp
 
-La documentación oficial explica que con `--data` cambias implícitamente a POST y sqlmap probará esos parámetros (además de los GET si existen). citeturn1view0
+La documentación oficial explica que con `--data` cambias implícitamente a POST y sqlmap probará esos parámetros (además de los GET si existen). 
 
 Ejemplo POST sin `-r`:
 
@@ -67,7 +67,7 @@ Ejemplo POST sin `-r`:
 sqlmap -u "http://172.17.0.2/index.php" --data="name=asd&password=asd&submit=" --dbs
 ```
 
-Si el vector está en cookies o headers, sqlmap puede enviarlos y, a partir de ciertos niveles, incluso testearlos como puntos de inyección: cookies desde `--level >= 2`, y User-Agent/Referer desde `--level >= 3` (documentado en la guía de uso). citeturn1view0
+Si el vector está en cookies o headers, sqlmap puede enviarlos y, a partir de ciertos niveles, incluso testearlos como puntos de inyección: cookies desde `--level >= 2`, y User-Agent/Referer desde `--level >= 3` (documentado en la guía de uso). 
 
 ## Metodología paso a paso con objetivos por fase
 
@@ -94,7 +94,7 @@ flowchart TD
 
 Objetivo: no ejecutar sqlmap contra “la home” sin parámetros.
 
-- Si no hay parámetros, sqlmap no tiene qué testear (el típico “no parameter(s) found”). En ese caso debes aportar parámetros (GET/POST/cookie/header), apuntar con `-p`, o usar funcionalidades de descubrimiento como `--forms` o `--crawl`. La guía oficial documenta `--forms` para parsear formularios y `--crawl` para recolectar enlaces desde una URL base. citeturn5view2turn5view0
+- Si no hay parámetros, sqlmap no tiene qué testear (el típico “no parameter(s) found”). En ese caso debes aportar parámetros (GET/POST/cookie/header), apuntar con `-p`, o usar funcionalidades de descubrimiento como `--forms` o `--crawl`. La guía oficial documenta `--forms` para parsear formularios y `--crawl` para recolectar enlaces desde una URL base. 
 
 Plantillas rápidas:
 
@@ -110,10 +110,10 @@ sqlmap -u "http://172.17.0.2/" --crawl=2 --batch
 
 Objetivo: confirmar SQLi, con reproducibilidad y sin quedarte bloqueado en prompts.
 
-- `--batch` activa modo no interactivo: sqlmap elige el comportamiento por defecto cuando pediría input. Está documentado como “actuar sin interacción del usuario”. citeturn5view2turn1view0  
-- Si aun en batch quieres forzar respuestas a preguntas concretas, existe `--answers="pregunta=respuesta,..."`. citeturn5view2turn1view0  
-- Para acotar el parámetro a testear cuando hay múltiples, usa `-p`. citeturn3view1turn3view1  
-- Para acotar técnicas, `--technique=BEUSTQ` (o subconjunto). citeturn1view0turn2view0  
+- `--batch` activa modo no interactivo: sqlmap elige el comportamiento por defecto cuando pediría input. Está documentado como “actuar sin interacción del usuario”. 
+- Si aun en batch quieres forzar respuestas a preguntas concretas, existe `--answers="pregunta=respuesta,..."`. 
+- Para acotar el parámetro a testear cuando hay múltiples, usa `-p`.
+- Para acotar técnicas, `--technique=BEUSTQ` (o subconjunto). 
 
 Detección recomendada con request cruda:
 
