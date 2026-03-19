@@ -1,6 +1,5 @@
 # Manual y metodología completa de uso de sqlmap
 
-## Resumen ejecutivo
 
 sqlmap es una herramienta open source de *pentesting* que automatiza la detección y explotación de vulnerabilidades de SQL injection y, cuando se dan las condiciones (DBMS, privilegios y técnica disponible), puede llegar a “tomar” el servidor de base de datos: enumerar esquema, extraer datos, acceder al sistema de ficheros y ejecutar comandos en el sistema operativo subyacente. citeturn4search36turn1view0
 
