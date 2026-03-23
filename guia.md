@@ -133,20 +133,20 @@ sqlmap -r req.txt -p name --batch --dbs
 |---|---|---|
 | `-u` | URL objetivo | `sqlmap -u "http://target/vuln.php?id=1" --dbs` 
 | `--data` | Fuerza POST con cuerpo y testea parámetros | `sqlmap -u "http://target/login.php" --data="u=a&p=b" --dbs` 
-| `-r` | Cargar request HTTP cruda desde fichero | `sqlmap -r req.txt --dbs` citeturn3view1turn1view0 |
+| `-r` | Cargar request HTTP cruda desde fichero | `sqlmap -r req.txt --dbs` 
 | `--cookie` | Enviar cookies; útil para auth y para testear vector en cookie | `sqlmap -u "http://t/v.php?id=1" --cookie="PHPSESSID=..." --dbs`
 | `--headers` | Añadir headers extra (uno por línea) | `sqlmap -u "http://t/v.php?id=1" --headers=$'X-Test: 1\nX-Forwarded-For: 127.0.0.1'` 
-| `--random-agent` | User-Agent aleatorio (evitar bloqueos simples) | `sqlmap -r req.txt --random-agent --batch` citeturn1view0 |
+| `--random-agent` | User-Agent aleatorio (evitar bloqueos simples) | `sqlmap -r req.txt --random-agent --batch` 
 | `--level` | Profundidad de tests y “superficie” (incluye más vectores: cookies/headers) | `sqlmap -r req.txt --level=5 --batch` 
-| `--risk` | Riesgo de payloads (más agresivos; puede ser peligroso) | `sqlmap -r req.txt --risk=3 --batch` citeturn1view0 |
+| `--risk` | Riesgo de payloads (más agresivos; puede ser peligroso) | `sqlmap -r req.txt --risk=3 --batch` 
 | `--tamper` | Aplicar scripts de ofuscación/transformación | `sqlmap -r req.txt --tamper="between,randomcase" --batch`
 | `--threads` | Concurrencia HTTP (acelera blind/enum; cuidado con estabilidad) | `sqlmap -r req.txt --threads=5 --batch` 
-| `-p` | Elegir parámetro(s) testeables | `sqlmap -r req.txt -p name --dbs --batch` citeturn3view1 |
-| `--technique` | Limitar técnicas (p.ej. solo Error+Stacked) | `sqlmap -r req.txt --technique=ES --batch` citeturn1view0 |
+| `-p` | Elegir parámetro(s) testeables | `sqlmap -r req.txt -p name --dbs --batch`
+| `--technique` | Limitar técnicas (p.ej. solo Error+Stacked) | `sqlmap -r req.txt --technique=ES --batch`
 | `--auth-type/--auth-cred` | Autenticación HTTP Basic/Digest/NTLM (si aplica) | `sqlmap -u "http://t/v.php?id=1" --auth-type Basic --auth-cred "u:p"`
 | `--forms / --crawl` | Descubrir inputs (formularios/enlaces) | `sqlmap -u "http://t/" --forms --crawl=2 --batch` 
 
-Nota de seguridad operativa: `--risk=3` puede introducir payloads `OR` que, en ciertos contextos (por ejemplo en un `UPDATE` vulnerable), podrían afectar múltiples filas. La guía oficial explica la motivación de `--risk` precisamente para que el usuario controle tests potencialmente peligrosos. citeturn1view0
+Nota de seguridad operativa: `--risk=3` puede introducir payloads `OR` que, en ciertos contextos (por ejemplo en un `UPDATE` vulnerable), podrían afectar múltiples filas. La guía oficial explica la motivación de `--risk` precisamente para que el usuario controle tests potencialmente peligrosos.
 
 ## Enumeración y extracción con ejemplos prácticos
 
