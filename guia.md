@@ -17,9 +17,9 @@ La nomenclatura práctica en sqlmap para seleccionar técnicas es `--technique=.
 
 | Técnica | Qué “mide”/cómo exfiltra | Señal típica | Ventajas | Coste / limitaciones | Cuándo priorizar |
 |---|---|---|---|---|---|
-| Boolean-based blind (`B`) | Diferencias entre respuestas “True/False” | Cambios sutiles en contenido/código/longitud | Robusta cuando no hay errores visibles | Lenta; requiere comparaciones fiables | Cuando no hay errores y el tiempo no varía; ideal con `--string/--not-string/--code` si la página es inestable citeturn1view0turn0search6 |
+| Boolean-based blind (`B`) | Diferencias entre respuestas “True/False” | Cambios sutiles en contenido/código/longitud | Robusta cuando no hay errores visibles | Lenta; requiere comparaciones fiables | Cuando no hay errores y el tiempo no varía; ideal con `--string/--not-string/--code` si la página es inestable  |
 | Error-based (`E`) | Exfiltración mediante mensajes de error DBMS | Errores SQL/reflejos en respuesta | Suele ser muy rápida (in-band) | Depende de verbosidad/errores visibles | Cuando la app muestra errores o es posible forzarlos (`--parse-errors` puede ayudar)  |
-| Time-based blind (`T`) | Inferencia por retardos (p.ej. `SLEEP`) | Respuestas consistentemente más lentas | Funciona incluso sin diferencias de contenido | Muy lenta; sensible a latencia | Cuando la app es “ciega” pero el timing es estable; ajusta `--time-sec` citeturn1view0turn0search6 |
+| Time-based blind (`T`) | Inferencia por retardos (p.ej. `SLEEP`) | Respuestas consistentemente más lentas | Funciona incluso sin diferencias de contenido | Muy lenta; sensible a latencia | Cuando la app es “ciega” pero el timing es estable; ajusta `--time-sec`  |
 | UNION query-based (`U`) | Exfiltra datos combinando resultados (`UNION SELECT`) | Datos aparecen en la página | Muy rápida si hay reflejo | Requiere encontrar nº de columnas/compatibilidad | Cuando el endpoint renderiza resultados en pantalla y permite `UNION` (puede requerir `--union-cols/--union-char`)  |
 | Stacked queries (`S`) | Ejecuta múltiples sentencias separadas | Efectos “side-effect” (p.ej. `SLEEP`) | Habilita OS/file access con más facilidad | No siempre permitido; más riesgoso | Cuando necesitas *takeover* (OS/file/acciones) y el DBMS lo soporta; sqlmap indica que `S` es relevante para takeover/ |
 | Inline queries (`Q`) | Subconsultas insertadas en la query | Similar a otras, según vector | Complementa combinaciones | Depende del contexto SQL | Cuando el punto de inyección está en un contexto que favorece subqueries  |
@@ -53,7 +53,6 @@ Puntos importantes:
 - Si el target usa HTTPS y el `Host` no lo deja claro, la documentación recomienda `--force-ssl` (o `Host: ...:443`) para forzar conexión TLS. 
 - Si hay tokens anti-CSRF, sqlmap tiene opciones específicas (`--csrf-token`, `--csrf-url`, etc.). En la request esto está **no especificado**.  
 
-image_group{"aspect_ratio":"16:9","query":["sqlmap -r request file example","sqlmap request.txt raw http request format","sqlmap parse HTTP request from file screenshot"],"num_per_query":1}
 
 ### Alternativas a `-r` cuando no puedes capturar con Burp
 
