@@ -53,9 +53,9 @@ Puntos importantes:
 
 - La request cruda contiene *headers* y cuerpo. sqlmap parsea ambas partes.   
 - Si el target usa HTTPS y el `Host` no lo deja claro, la documentación recomienda `--force-ssl` (o `Host: ...:443`) para forzar conexión TLS. 
-- Si hay tokens anti-CSRF, sqlmap tiene opciones específicas (`--csrf-token`, `--csrf-url`, etc.). En tu request esto está **no especificado**.  
+- Si hay tokens anti-CSRF, sqlmap tiene opciones específicas (`--csrf-token`, `--csrf-url`, etc.). En la request esto está **no especificado**.  
 
-image_group{"aspect_ratio":"16:9","query":["sqlmap -r request file example","sqlmap request.txt raw http request format","sqlmap parse HTTP request from file screenshot"],"num_per_query":1}
+image_group{"aspect_ratio":"16:9","query":["sqlmap -r request file example","sqlmap request.txt raw http request format","sqlmap parse HTTP request from file screenshot"],"num_per_query":1}
 
 ### Alternativas a `-r` cuando no puedes capturar con Burp
 
