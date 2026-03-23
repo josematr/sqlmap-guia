@@ -28,9 +28,7 @@ Un punto clave de metodología: no “fuerces” técnicas por capricho. Si sqlm
 
 ## Preparación operativa con Burp y request cruda
 
-Probar SQLi en serio exige ver y controlar la request real. La documentación de entity["company","PortSwigger","burp suite vendor"] insiste en un flujo de pruebas donde manipulas requests y entradas para detectar inyecciones.
-
-image_group{"aspect_ratio":"16:9","query":["Burp Suite Repeater raw HTTP request example","Burp Suite Proxy HTTP request intercepted example","Burp Suite Repeater request body application/x-www-form-urlencoded"],"num_per_query":1}
+Probar SQLi en serio exige ver y controlar la request real. La documentación de ["company","PortSwigger","burp suite vendor"] insiste en un flujo de pruebas donde manipulas requests y entradas para detectar inyecciones.
 
 ### Por qué `-r` es el estándar de facto
 
