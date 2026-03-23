@@ -273,9 +273,6 @@ Si la página cambia aun sin inyección, sqlmap permite afinar la comparación c
 ### Buenas prácticas de seguridad y legalidad
 
 - sqlmap incluye un “legal disclaimer” explícito: su uso contra objetivos sin consentimiento es ilegal, y la responsabilidad recae en el usuario final. En un entorno de formación/lab, documenta siempre el alcance y permisos.  
-- Desde la perspectiva defensiva, entity["organization","OWASP","nonprofit web security"] provee guías para probar y prevenir SQLi (validación, parametrización, etc.). Incluir mitigaciones en el informe final es parte del trabajo de calidad. 
+- Desde la perspectiva defensiva, provee guías para probar y prevenir SQLi (validación, parametrización, etc.). Incluir mitigaciones en el informe final es parte del trabajo de calidad. 
 - Tras takeover/FS/OS, sqlmap recomienda limpiar artefactos temporales (tablas/UDFs), y documenta `--cleanup` para intentarlo. 
 
-### Referencias priorizadas para ampliar
-
-Las fuentes más sólidas para “aprender de verdad” y verificar flags/comportamiento son: documentación oficial de sqlmap (web y wiki de uso), guías de testing de entity["organization","OWASP","nonprofit web security"] (WSTG) y documentación de entity["company","PortSwigger","burp suite vendor"] sobre pruebas de SQLi. Para apoyo en español, existen *cheat sheets* y guías prácticas (calidad variable) que pueden servir como recordatorio, pero deben contrastarse con la documentación oficial. 
